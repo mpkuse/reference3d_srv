@@ -1,0 +1,10 @@
+float64 tx
+float64 ty
+float64 tz
+float64 rx
+float64 ry
+float64 rz
+float64 rd
+---
+sensor_msgs/Image rgb
+sensor_msgs/Image depth
