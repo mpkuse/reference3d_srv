@@ -21,6 +21,8 @@ import numpy
 import time
 import math
 import rospkg
+from time import time
+
  
 # IMPORT OBJECT LOADER
 from objloader import *
@@ -48,12 +50,13 @@ def handle_render(req):
     rd=req.rd
     flag=False
     while flag==False:
-        print "waiting"
-        sleep(0.001)
+        #print "waiting"
+        sleep(0.01)
 
     bridge = CvBridge()
     #return RenderResponse(numpy.array(img2), numpy.array(img))
-    return RenderResponse(bridge.cv2_to_imgmsg(numpy.array(img2), "mono8"), bridge.cv2_to_imgmsg(numpy.array(img), "mono8"))
+    return RenderResponse(bridge.cv2_to_imgmsg(numpy.array(img2), "bgr8"), bridge.cv2_to_imgmsg(numpy.array(img), "mono8"))
+
 
     #print "window",window
     #global obj
@@ -88,7 +91,8 @@ if __name__ == '__main__':
     #rospy.spin()
     #print 'pipikk_rosspin'
 
-    viewport = (188,120)
+    viewport = (320,240)
+    #viewport = (160,120)
     FOV=55####FOV of the height (tan (FOV/2)=(height-c_y)/f_y)
     far=120.0
     near=3
@@ -117,6 +121,7 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         if flag==False:
             print "start rendering"
+            startTime = time()
             print tx,ty,tz,rd,rx,ry,rz
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
             glLoadIdentity()
@@ -144,10 +149,14 @@ if __name__ == '__main__':
             img2= Image.fromstring('RGB', (width, height), data2)
             img = Image.fromstring('L', (width, height), data)
             img2 = img2.transpose(Image.FLIP_TOP_BOTTOM)
-            img2 = img2.convert('L')
+            #img2 = img2.convert('L')
             img = img.transpose(Image.FLIP_TOP_BOTTOM)
 
-            print "stop rendering"
+
+		
+
+            print "stop rendering. EXEC_TIME : ", (time() - startTime)
+            
             flag=True
         else:
             sleep(0.001)
